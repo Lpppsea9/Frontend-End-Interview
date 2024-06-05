@@ -4,6 +4,8 @@ const add10 = (x) => x + 10;
 const mul10 = (x) => x * 10;
 const add100 = (x) => x + 100;
 
+// 输出1110
+
 const compose =
 	(...fns) =>
 	(init) =>

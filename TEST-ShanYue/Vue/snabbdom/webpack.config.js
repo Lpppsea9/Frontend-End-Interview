@@ -7,7 +7,7 @@ module.exports = {
 	output: {
 		filename: "main.js",
 		path: path.resolve(__dirname, "./dist"),
-		publicPath: "/huna3", //在浏览器中访问的路径 http://localhost:3000/xxx(js所在的路径)
+		// publicPath: "/huna3", //在浏览器中访问的路径 http://localhost:3000/xxx(js所在的路径)
 		clean: true,
 	},
 	module: {
@@ -35,7 +35,7 @@ module.exports = {
 	devServer: {
 		static: {
 			directory: path.resolve(__dirname, "./dist"),
-			publicPath: "/hunas", //http://localhost:8080/huna/main.js
+			// publicPath: "/hunas", //http://localhost:8080/huna/main.js
 		},
 
 		host: "localhost", // 启动服务器域名
