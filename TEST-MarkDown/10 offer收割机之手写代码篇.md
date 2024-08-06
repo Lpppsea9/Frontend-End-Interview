@@ -1,12 +1,10 @@
-
 ![手写代码面试题.png](https://cdn.nlark.com/yuque/0/2021/png/1500604/1621676946378-71d6b405-ef4e-42e4-9e42-f9c9aafcefb6.png?x-oss-process=image%2Fresize%2Cw_1038)
-
 
 ##手写系列建议配合鲨鱼哥的掘金手写面试题文章一起看（更多更全）
 
 ## 一、JavaScript 基础
 
-### 1. 手写 Object.create 
+### 1. 手写 Object.create
 
 思路：将传入的对象作为原型
 
@@ -22,15 +20,11 @@ function create(obj) {
 
 instanceof 运算符用于判断构造函数的 prototype 属性是否出现在对象的原型链中的任何位置。
 
-
-
 实现步骤：
 
 1. 首先获取类型的原型
 2. 然后获得对象的原型
 3. 然后一直循环判断对象的原型是否等于类型的原型，直到对象原型为 `null`，因为原型链最终为 `null`
-
-
 
 具体实现：
 
@@ -197,9 +191,7 @@ MyPromise.prototype.then = function(onResolved, onRejected) {
 
 ### 5. 手写 Promise.then
 
-`then` 方法返回一个新的 `promise` 实例，为了在 `promise` 状态发生变化时（`resolve` / `reject` 被调用时）再执行 `then` 里的函数，我们使用一个 `callbacks` 数组先把传给then的函数暂存起来，等状态改变时再调用。
-
-
+`then` 方法返回一个新的 `promise` 实例，为了在 `promise` 状态发生变化时（`resolve` / `reject` 被调用时）再执行 `then` 里的函数，我们使用一个 `callbacks` 数组先把传给 then 的函数暂存起来，等状态改变时再调用。
 
 **那么，怎么保证后一个** `**then**` **里的方法在前一个** `**then**`**（可能是异步）结束之后再执行呢？**
 
@@ -211,7 +203,7 @@ MyPromise.prototype.then = function(onResolved, onRejected) {
 ```
 then(onFulfilled, onReject){
     // 保存前一个promise的this
-    const self = this; 
+    const self = this;
     return new MyPromise((resolve, reject) => {
       // 封装前一个promise成功时执行的函数
       let fulfilled = () => {
@@ -232,7 +224,7 @@ then(onFulfilled, onReject){
         }
       }
       switch(self.status){
-        case PENDING: 
+        case PENDING:
           self.onFulfilledCallbacks.push(fulfilled);
           self.onRejectedCallbacks.push(rejected);
           break;
@@ -258,7 +250,7 @@ then(onFulfilled, onReject){
 
 1. 接收一个 Promise 实例的数组或具有 Iterator 接口的对象作为参数
 2. 这个方法返回一个新的 promise 对象，
-3. 遍历传入的参数，用Promise.resolve()将参数"包一层"，使其变成一个promise对象
+3. 遍历传入的参数，用 Promise.resolve()将参数"包一层"，使其变成一个 promise 对象
 4. 参数所有回调成功才是成功，返回值数组与参数顺序一致
 5. 参数数组其中一个失败，则触发失败状态，第一个触发失败的 Promise 错误信息作为 Promise.all 的错误信息。
 
@@ -268,45 +260,48 @@ then(onFulfilled, onReject){
 
 ```javascript
 function promiseAll(promises) {
-  return new Promise(function(resolve, reject) {
-    if(!Array.isArray(promises)){
-        throw new TypeError(`argument must be a array`)
-    }
-    var resolvedCounter = 0;
-    var promiseNum = promises.length;
-    var resolvedResult = [];
-    for (let i = 0; i < promiseNum; i++) {
-      Promise.resolve(promises[i]).then(value=>{
-        resolvedCounter++;
-        resolvedResult[i] = value;
-        if (resolvedCounter == promiseNum) {
-            return resolve(resolvedResult)
-          }
-      },error=>{
-        return reject(error)
-      })
-    }
-  })
+	return new Promise(function (resolve, reject) {
+		if (!Array.isArray(promises)) {
+			throw new TypeError(`argument must be a array`);
+		}
+		var resolvedCounter = 0;
+		var promiseNum = promises.length;
+		var resolvedResult = [];
+		for (let i = 0; i < promiseNum; i++) {
+			Promise.resolve(promises[i]).then(
+				(value) => {
+					resolvedCounter++;
+					resolvedResult[i] = value;
+					if (resolvedCounter == promiseNum) {
+						return resolve(resolvedResult);
+					}
+				},
+				(error) => {
+					return reject(error);
+				}
+			);
+		}
+	});
 }
 // test
 let p1 = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        resolve(1)
-    }, 1000)
-})
+	setTimeout(function () {
+		resolve(1);
+	}, 1000);
+});
 let p2 = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        resolve(2)
-    }, 2000)
-})
+	setTimeout(function () {
+		resolve(2);
+	}, 2000);
+});
 let p3 = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        resolve(3)
-    }, 3000)
-})
-promiseAll([p3, p1, p2]).then(res => {
-    console.log(res) // [3, 1, 2]
-})
+	setTimeout(function () {
+		resolve(3);
+	}, 3000);
+});
+promiseAll([p3, p1, p2]).then((res) => {
+	console.log(res); // [3, 1, 2]
+});
 ```
 
 ### 7. 手写 Promise.race
@@ -495,7 +490,7 @@ Function.prototype.myBind = function(context) {
 
 ### 14. 函数柯里化的实现
 
- 函数柯里化指的是一种将使用多个参数的一个函数转换成一系列使用一个参数的函数的技术。
+函数柯里化指的是一种将使用多个参数的一个函数转换成一系列使用一个参数的函数的技术。
 
 ```
 function curry(fn, args) {
@@ -529,17 +524,15 @@ function curry(fn, ...args) {
 }
 ```
 
-### 15. 实现AJAX请求
+### 15. 实现 AJAX 请求
 
-AJAX是 Asynchronous JavaScript and XML 的缩写，指的是通过 JavaScript 的 异步通信，从服务器获取 XML 文档从中提取数据，再更新当前网页的对应部分，而不用刷新整个网页。
+AJAX 是 Asynchronous JavaScript and XML 的缩写，指的是通过 JavaScript 的 异步通信，从服务器获取 XML 文档从中提取数据，再更新当前网页的对应部分，而不用刷新整个网页。
 
-
-
-创建AJAX请求的步骤：
+创建 AJAX 请求的步骤：
 
 - **创建一个 XMLHttpRequest 对象。**
 - 在这个对象上**使用 open 方法创建一个 HTTP 请求**，open 方法所需要的参数是请求的方法、请求的地址、是否异步和用户的认证信息。
-- 在发起请求前，可以为这个对象**添加一些信息和监听函数**。比如说可以通过 setRequestHeader 方法来为请求添加头信息。还可以为这个对象添加一个状态监听函数。一个 XMLHttpRequest 对象一共有 5 个状态，当它的状态变化时会触发onreadystatechange 事件，可以通过设置监听函数，来处理请求成功后的结果。当对象的 readyState 变为 4 的时候，代表服务器返回的数据接收完成，这个时候可以通过判断请求的状态，如果状态是 2xx 或者 304 的话则代表返回正常。这个时候就可以通过 response 中的数据来对页面进行更新了。
+- 在发起请求前，可以为这个对象**添加一些信息和监听函数**。比如说可以通过 setRequestHeader 方法来为请求添加头信息。还可以为这个对象添加一个状态监听函数。一个 XMLHttpRequest 对象一共有 5 个状态，当它的状态变化时会触发 onreadystatechange 事件，可以通过设置监听函数，来处理请求成功后的结果。当对象的 readyState 变为 4 的时候，代表服务器返回的数据接收完成，这个时候可以通过判断请求的状态，如果状态是 2xx 或者 304 的话则代表返回正常。这个时候就可以通过 response 中的数据来对页面进行更新了。
 - 当对象的属性和监听函数设置完成后，最后调**用 send 方法来向服务器发起请求**，可以传入参数作为发送的数据体。
 
 ```
@@ -568,38 +561,38 @@ xhr.setRequestHeader("Accept", "application/json");
 xhr.send(null);
 ```
 
-### 16. 使用Promise封装AJAX请求
+### 16. 使用 Promise 封装 AJAX 请求
 
 ```javascript
 // promise 封装实现：
 function getJSON(url) {
-  // 创建一个 promise 对象
-  let promise = new Promise(function(resolve, reject) {
-    let xhr = new XMLHttpRequest();
-    // 新建一个 http 请求
-    xhr.open("GET", url, true);
-    // 设置状态的监听函数
-    xhr.onreadystatechange = function() {
-      if (this.readyState !== 4) return;
-      // 当请求成功或失败时，改变 promise 的状态
-      if (this.status === 200) {
-        resolve(this.response);
-      } else {
-        reject(new Error(this.statusText));
-      }
-    };
-    // 设置错误监听函数
-    xhr.onerror = function() {
-      reject(new Error(this.statusText));
-    };
-    // 设置响应的数据类型
-    xhr.responseType = "json";
-    // 设置请求头信息
-    xhr.setRequestHeader("Accept", "application/json");
-    // 发送 http 请求
-    xhr.send(null);
-  });
-  return promise;
+	// 创建一个 promise 对象
+	let promise = new Promise(function (resolve, reject) {
+		let xhr = new XMLHttpRequest();
+		// 新建一个 http 请求
+		xhr.open("GET", url, true);
+		// 设置状态的监听函数
+		xhr.onreadystatechange = function () {
+			if (this.readyState !== 4) return;
+			// 当请求成功或失败时，改变 promise 的状态
+			if (this.status === 200) {
+				resolve(this.response);
+			} else {
+				reject(new Error(this.statusText));
+			}
+		};
+		// 设置错误监听函数
+		xhr.onerror = function () {
+			reject(new Error(this.statusText));
+		};
+		// 设置响应的数据类型
+		xhr.responseType = "json";
+		// 设置请求头信息
+		xhr.setRequestHeader("Accept", "application/json");
+		// 发送 http 请求
+		xhr.send(null);
+	});
+	return promise;
 }
 ```
 
@@ -609,9 +602,7 @@ function getJSON(url) {
 
 #### （1）Object.assign()
 
-`Object.assign()`是ES6中对象的拷贝方法，接受的第一个参数是目标对象，其余参数是源对象，用法：`Object.assign(target, source_1, ···)`，该方法可以实现浅拷贝，也可以实现一维对象的深拷贝。
-
-
+`Object.assign()`是 ES6 中对象的拷贝方法，接受的第一个参数是目标对象，其余参数是源对象，用法：`Object.assign(target, source_1, ···)`，该方法可以实现浅拷贝，也可以实现一维对象的深拷贝。
 
 **注意：**
 
@@ -620,11 +611,11 @@ function getJSON(url) {
 - 因为`null` 和 `undefined` 不能转化为对象，所以第一个参数不能为`null`或 `undefined`，会报错。
 
 ```javascript
-let target = {a: 1};
-let object2 = {b: 2};
-let object3 = {c: 3};
-Object.assign(target,object2,object3);  
-console.log(target);  // {a: 1, b: 2, c: 3}
+let target = { a: 1 };
+let object2 = { b: 2 };
+let object3 = { c: 3 };
+Object.assign(target, object2, object3);
+console.log(target); // {a: 1, b: 2, c: 3}
 ```
 
 #### （2）扩展运算符
@@ -632,8 +623,8 @@ console.log(target);  // {a: 1, b: 2, c: 3}
 使用扩展运算符可以在构造字面量对象的时候，进行属性的拷贝。语法：`let cloneObj = { ...obj };`
 
 ```javascript
-let obj1 = {a:1,b:{c:1}}
-let obj2 = {...obj1};
+let obj1 = { a: 1, b: { c: 1 } };
+let obj2 = { ...obj1 };
 obj1.a = 2;
 console.log(obj1); //{a:2,b:{c:1}}
 console.log(obj2); //{a:1,b:{c:1}}
@@ -646,11 +637,11 @@ console.log(obj2); //{a:1,b:{c:2}}
 
 ###### **1）Array.prototype.slice**
 
-- `slice()`方法是JavaScript数组的一个方法，这个方法可以从已有数组中返回选定的元素：用法：`array.slice(start, end)`，该方法不会改变原始数组。
+- `slice()`方法是 JavaScript 数组的一个方法，这个方法可以从已有数组中返回选定的元素：用法：`array.slice(start, end)`，该方法不会改变原始数组。
 - 该方法有两个参数，两个参数都可选，如果两个参数都不写，就可以实现一个数组的浅拷贝。
 
 ```javascript
-let arr = [1,2,3,4];
+let arr = [1, 2, 3, 4];
 console.log(arr.slice()); // [1,2,3,4]
 console.log(arr.slice() === arr); //false
 ```
@@ -661,7 +652,7 @@ console.log(arr.slice() === arr); //false
 - 该方法有两个参数，两个参数都可选，如果两个参数都不写，就可以实现一个数组的浅拷贝。
 
 ```javascript
-let arr = [1,2,3,4];
+let arr = [1, 2, 3, 4];
 console.log(arr.concat()); // [1,2,3,4]
 console.log(arr.concat() === arr); //false
 ```
@@ -672,71 +663,70 @@ console.log(arr.concat() === arr); //false
 // 浅拷贝的实现;
 
 function shallowCopy(object) {
-  // 只拷贝对象
-  if (!object || typeof object !== "object") return;
+	// 只拷贝对象
+	if (!object || typeof object !== "object") return;
 
-  // 根据 object 的类型判断是新建一个数组还是对象
-  let newObject = Array.isArray(object) ? [] : {};
+	// 根据 object 的类型判断是新建一个数组还是对象
+	let newObject = Array.isArray(object) ? [] : {};
 
-  // 遍历 object，并且判断是 object 的属性才拷贝
-  for (let key in object) {
-    if (object.hasOwnProperty(key)) {
-      newObject[key] = object[key];
-    }
-  }
+	// 遍历 object，并且判断是 object 的属性才拷贝
+	for (let key in object) {
+		if (object.hasOwnProperty(key)) {
+			newObject[key] = object[key];
+		}
+	}
 
-  return newObject;
-}// 浅拷贝的实现;
+	return newObject;
+} // 浅拷贝的实现;
 
 function shallowCopy(object) {
-  // 只拷贝对象
-  if (!object || typeof object !== "object") return;
+	// 只拷贝对象
+	if (!object || typeof object !== "object") return;
 
-  // 根据 object 的类型判断是新建一个数组还是对象
-  let newObject = Array.isArray(object) ? [] : {};
+	// 根据 object 的类型判断是新建一个数组还是对象
+	let newObject = Array.isArray(object) ? [] : {};
 
-  // 遍历 object，并且判断是 object 的属性才拷贝
-  for (let key in object) {
-    if (object.hasOwnProperty(key)) {
-      newObject[key] = object[key];
-    }
-  }
+	// 遍历 object，并且判断是 object 的属性才拷贝
+	for (let key in object) {
+		if (object.hasOwnProperty(key)) {
+			newObject[key] = object[key];
+		}
+	}
 
-  return newObject;
-}// 浅拷贝的实现;
+	return newObject;
+} // 浅拷贝的实现;
 function shallowCopy(object) {
-  // 只拷贝对象
-  if (!object || typeof object !== "object") return;
-  // 根据 object 的类型判断是新建一个数组还是对象
-  let newObject = Array.isArray(object) ? [] : {};
-  // 遍历 object，并且判断是 object 的属性才拷贝
-  for (let key in object) {
-    if (object.hasOwnProperty(key)) {
-      newObject[key] = object[key];
-    }
-  }
-  return newObject;
+	// 只拷贝对象
+	if (!object || typeof object !== "object") return;
+	// 根据 object 的类型判断是新建一个数组还是对象
+	let newObject = Array.isArray(object) ? [] : {};
+	// 遍历 object，并且判断是 object 的属性才拷贝
+	for (let key in object) {
+		if (object.hasOwnProperty(key)) {
+			newObject[key] = object[key];
+		}
+	}
+	return newObject;
 }
 ```
 
 ### 18. 实现深拷贝
 
-- **浅拷贝：**浅拷贝指的是将一个对象的属性值复制到另一个对象，如果有的属性的值为引用类型的话，那么会将这个引用的地址复制给对象，因此两个对象会有同一个引用类型的引用。浅拷贝可以使用  Object.assign 和展开运算符来实现。
+- **浅拷贝：**浅拷贝指的是将一个对象的属性值复制到另一个对象，如果有的属性的值为引用类型的话，那么会将这个引用的地址复制给对象，因此两个对象会有同一个引用类型的引用。浅拷贝可以使用 Object.assign 和展开运算符来实现。
 - **深拷贝：**深拷贝相对浅拷贝而言，如果遇到属性值为引用类型的时候，它新建一个引用类型并将对应的值复制给它，因此对象获得的一个新的引用类型而不是一个原有类型的引用。深拷贝对于一些对象可以使用 JSON 的两个函数来实现，但是由于 JSON 的对象格式比 js 的对象格式更加严格，所以如果属性值里边出现函数或者 Symbol 类型的值时，会转换失败
-
-
 
 #### （1）JSON.stringify()
 
-- `JSON.parse(JSON.stringify(obj))`是目前比较常用的深拷贝方法之一，它的原理就是利用`JSON.stringify` 将`js`对象序列化（JSON字符串），再使用`JSON.parse`来反序列化(还原)`js`对象。
+- `JSON.parse(JSON.stringify(obj))`是目前比较常用的深拷贝方法之一，它的原理就是利用`JSON.stringify` 将`js`对象序列化（JSON 字符串），再使用`JSON.parse`来反序列化(还原)`js`对象。
 - 这个方法可以简单粗暴的实现深拷贝，但是还存在问题，拷贝的对象中如果有函数，undefined，symbol，当使用过`JSON.stringify()`进行处理之后，都会消失。
 
 ```javascript
-let obj1 = {  a: 0,
-              b: {
-                 c: 0
-                 }
-            };
+let obj1 = {
+	a: 0,
+	b: {
+		c: 0,
+	},
+};
 let obj2 = JSON.parse(JSON.stringify(obj1));
 obj1.a = 1;
 obj1.b.c = 1;
@@ -744,19 +734,19 @@ console.log(obj1); // {a: 1, b: {c: 1}}
 console.log(obj2); // {a: 0, b: {c: 0}}
 ```
 
-#### （2）函数库lodash的_.cloneDeep方法
+#### （2）函数库 lodash 的\_.cloneDeep 方法
 
-该函数库也有提供_.cloneDeep用来做 Deep Copy
+该函数库也有提供\_.cloneDeep 用来做 Deep Copy
 
 ```javascript
-var _ = require('lodash');
+var _ = require("lodash");
 var obj1 = {
-    a: 1,
-    b: { f: { g: 1 } },
-    c: [1, 2, 3]
+	a: 1,
+	b: { f: { g: 1 } },
+	c: [1, 2, 3],
 };
 var obj2 = _.cloneDeep(obj1);
-console.log(obj1.b.f === obj2.b.f);// false
+console.log(obj1.b.f === obj2.b.f); // false
 ```
 
 #### （3）手写实现深拷贝函数
@@ -764,18 +754,18 @@ console.log(obj1.b.f === obj2.b.f);// false
 ```javascript
 // 深拷贝的实现
 function deepCopy(object) {
-  if (!object || typeof object !== "object") return;
+	if (!object || typeof object !== "object") return;
 
-  let newObject = Array.isArray(object) ? [] : {};
+	let newObject = Array.isArray(object) ? [] : {};
 
-  for (let key in object) {
-    if (object.hasOwnProperty(key)) {
-      newObject[key] =
-        typeof object[key] === "object" ? deepCopy(object[key]) : object[key];
-    }
-  }
+	for (let key in object) {
+		if (object.hasOwnProperty(key)) {
+			newObject[key] =
+				typeof object[key] === "object" ? deepCopy(object[key]) : object[key];
+		}
+	}
 
-  return newObject;
+	return newObject;
 }
 ```
 
@@ -793,9 +783,9 @@ dateFormat(new Date('2020-04-01'), 'yyyy年MM月dd日') // 2020年04月01日
 
 ```
 const dateFormat = (dateInput, format)=>{
-    var day = dateInput.getDate() 
-    var month = dateInput.getMonth() + 1  
-    var year = dateInput.getFullYear()   
+    var day = dateInput.getDate()
+    var month = dateInput.getMonth() + 1
+    var year = dateInput.getFullYear()
     format = format.replace(/yyyy/, year)
     format = format.replace(/MM/,month)
     format = format.replace(/dd/,day)
@@ -803,7 +793,7 @@ const dateFormat = (dateInput, format)=>{
 }
 ```
 
-### 2. 交换a,b的值，不能用临时变量
+### 2. 交换 a,b 的值，不能用临时变量
 
 巧妙的利用两个数的和、差：
 
@@ -818,7 +808,7 @@ a = a - b
 主要的实现思路就是：
 
 - 取出数组的第一个元素，随机产生一个索引值，将该第一个元素和这个索引对应的元素进行交换。
-- 第二次取出数据数组第二个元素，随机产生一个除了索引为1的之外的索引值，并将第二个元素与该索引值对应的元素进行交换
+- 第二次取出数据数组第二个元素，随机产生一个除了索引为 1 的之外的索引值，并将第二个元素与该索引值对应的元素进行交换
 - 按照上面的规律执行，直到遍历完成
 
 ```
@@ -867,11 +857,11 @@ console.log(arr);
 递归实现：
 
 ```
-let arr = [1, 2, 3, 4, 5, 6] 
+let arr = [1, 2, 3, 4, 5, 6]
 
 function add(arr) {
-    if (arr.length == 1) return arr[0] 
-    return arr[0] + add(arr.slice(1)) 
+    if (arr.length == 1) return arr[0]
+    return arr[0] + add(arr.slice(1))
 }
 console.log(add(arr)) // 21
 ```
@@ -901,7 +891,7 @@ flatten(arr);  //  [1, 2, 3, 4，5]
 
 **（2）reduce 函数迭代**
 
-从上面普通的递归函数中可以看出，其实就是对数组的每一项进行处理，那么其实也可以用reduce 来实现数组的拼接，从而简化第一种方法的代码，改造后的代码如下所示：
+从上面普通的递归函数中可以看出，其实就是对数组的每一项进行处理，那么其实也可以用 reduce 来实现数组的拼接，从而简化第一种方法的代码，改造后的代码如下所示：
 
 ```
 let arr = [1, [2, [3, 4]]];
@@ -928,7 +918,7 @@ function flatten(arr) {
 console.log(flatten(arr)); //  [1, 2, 3, 4，5]
 ```
 
-**（4）split 和 toString** 
+**（4）split 和 toString**
 
 可以通过 split 和 toString 两个方法来共同实现数组扁平化，由于数组会默认带一个 toString 的方法，所以可以把数组直接转换成逗号分隔的字符串，然后再用 split 方法把字符串重新转换为数组，如下面的代码所示：
 
@@ -942,11 +932,9 @@ console.log(flatten(arr)); //  [1, 2, 3, 4，5]
 
 通过这两个方法可以将多维数组直接转换成逗号连接的字符串，然后再重新分隔成数组。
 
-**（5）****ES6 中的 flat**
+**（5）\*\***ES6 中的 flat\*\*
 
 我们还可以直接调用 ES6 中的 flat 方法来实现数组扁平化。flat 方法的语法：`arr.flat([depth])`
-
-
 
 其中 depth 是 flat 的参数，depth 是可以传递数组的展开深度（默认不填、数值是 1），即展开一层数组。如果层数不确定，参数可以传进 Infinity，代表不论多少层都要展开：
 
@@ -962,7 +950,7 @@ console.log(flatten(arr)); //  [1, 2, 3, 4，5]
 
 **（6）正则和 JSON 方法**
 
-在第4种方法中已经使用 toString 方法，其中仍然采用了将 JSON.stringify 的方法先转换为字符串，然后通过正则表达式过滤掉字符串中的数组的方括号，最后再利用 JSON.parse 把它转换成数组：
+在第 4 种方法中已经使用 toString 方法，其中仍然采用了将 JSON.stringify 的方法先转换为字符串，然后通过正则表达式过滤掉字符串中的数组的方括号，最后再利用 JSON.parse 把它转换成数组：
 
 ```
 let arr = [1, [2, [3, [4, 5]]], 6];
@@ -970,7 +958,7 @@ function flatten(arr) {
   let str = JSON.stringify(arr);
   str = str.replace(/(\[|\])/g, '');
   str = '[' + str + ']';
-  return JSON.parse(str); 
+  return JSON.parse(str);
 }
 console.log(flatten(arr)); //  [1, 2, 3, 4，5]
 ```
@@ -979,9 +967,7 @@ console.log(flatten(arr)); //  [1, 2, 3, 4，5]
 
 给定某无序数组，要求去除数组中的重复数字并且返回新的无重复数组。
 
-
-
-ES6方法（使用数据结构集合）：
+ES6 方法（使用数据结构集合）：
 
 ```
 const array = [1, 2, 3, 5, 1, 5, 9, 1, 2, 8];
@@ -989,7 +975,7 @@ const array = [1, 2, 3, 5, 1, 5, 9, 1, 2, 8];
 Array.from(new Set(array)); // [1, 2, 3, 5, 9, 8]
 ```
 
-ES5方法：使用map存储不重复的数字
+ES5 方法：使用 map 存储不重复的数字
 
 ```
 const array = [1, 2, 3, 5, 1, 5, 9, 1, 2, 8];
@@ -1009,24 +995,24 @@ function uniqueArray(array) {
 }
 ```
 
-### 7. 实现数组的flat方法
+### 7. 实现数组的 flat 方法
 
 ```javascript
 function _flat(arr, depth) {
-  if(!Array.isArray(arr) || depth <= 0) {
-    return arr;
-  }
-  return arr.reduce((prev, cur) => {
-    if (Array.isArray(cur)) {
-      return prev.concat(_flat(cur, depth - 1))
-    } else {
-      return prev.concat(cur);
-    }
-  }, []);
+	if (!Array.isArray(arr) || depth <= 0) {
+		return arr;
+	}
+	return arr.reduce((prev, cur) => {
+		if (Array.isArray(cur)) {
+			return prev.concat(_flat(cur, depth - 1));
+		} else {
+			return prev.concat(cur);
+		}
+	}, []);
 }
 ```
 
-### 8. 实现数组的push方法
+### 8. 实现数组的 push 方法
 
 ```
 let arr = [];
@@ -1038,7 +1024,7 @@ Array.prototype.push = function() {
 }
 ```
 
-### 9. 实现数组的filter方法
+### 9. 实现数组的 filter 方法
 
 ```
 Array.prototype._filter = function(fn) {
@@ -1053,7 +1039,7 @@ Array.prototype._filter = function(fn) {
 }
 ```
 
-### 10. 实现数组的map方法
+### 10. 实现数组的 map 方法
 
 ```
 Array.prototype._map = function(fn) {
@@ -1068,9 +1054,9 @@ Array.prototype._map = function(fn) {
 }
 ```
 
-### 11. 实现字符串的repeat方法
+### 11. 实现字符串的 repeat 方法
 
-输入字符串s，以及其重复的次数，输出重复的结果，例如输入abc，2，输出abcabc。
+输入字符串 s，以及其重复的次数，输出重复的结果，例如输入 abc，2，输出 abcabc。
 
 ```
 function repeat(s, n) {
@@ -1121,7 +1107,7 @@ let format = n => {
         if (remainder > 0) { // 不是3的整数倍
             return num.slice(0, remainder) + ',' + num.slice(remainder, len).match(/\d{3}/g).join(',') + temp
         } else { // 是3的整数倍
-            return num.slice(0, len).match(/\d{3}/g).join(',') + temp 
+            return num.slice(0, len).match(/\d{3}/g).join(',') + temp
         }
     }
 }
@@ -1132,16 +1118,16 @@ format(12323.33)  // '12,323.33'
 
 ```
 let format = n => {
-    let num = n.toString() 
+    let num = n.toString()
     let len = num.length
     if (len <= 3) {
         return num
     } else {
         let remainder = len % 3
         if (remainder > 0) { // 不是3的整数倍
-            return num.slice(0, remainder) + ',' + num.slice(remainder, len).match(/\d{3}/g).join(',') 
+            return num.slice(0, remainder) + ',' + num.slice(remainder, len).match(/\d{3}/g).join(',')
         } else { // 是3的整数倍
-            return num.slice(0, len).match(/\d{3}/g).join(',') 
+            return num.slice(0, len).match(/\d{3}/g).join(',')
         }
     }
 }
@@ -1150,7 +1136,7 @@ format(1232323)  // '1,232,323'
 
 ### 14. 实现非负大整数相加
 
-JavaScript对数值有范围的限制，限制如下：
+JavaScript 对数值有范围的限制，限制如下：
 
 ```
 Number.MAX_VALUE // 1.7976931348623157e+308
@@ -1161,18 +1147,16 @@ Number.MIN_SAFE_INTEGER // -9007199254740991
 
 如果想要对一个超大的整数(`> Number.MAX_SAFE_INTEGER`)进行加法运算，但是又想输出一般形式，那么使用 + 是无法达到的，一旦数字超过 `Number.MAX_SAFE_INTEGER` 数字会被立即转换为科学计数法，并且数字精度相比以前将会有误差。
 
-
-
 实现一个算法进行大数的相加：
 
 ```
 function sumBigNumber(a, b) {
   let res = '';
   let temp = 0;
-  
+
   a = a.split('');
   b = b.split('');
-  
+
   while (a.length || b.length || temp) {
     temp += ~~a.pop() + ~~b.pop();
     res = (temp % 10) + res;
@@ -1185,16 +1169,14 @@ function sumBigNumber(a, b) {
 其主要的思路如下：
 
 - 首先用字符串的方式来保存大数，这样数字在数学表示上就不会发生变化
-- 初始化res，temp来保存中间的计算结果，并将两个字符串转化为数组，以便进行每一位的加法运算
-- 将两个数组的对应的位进行相加，两个数相加的结果可能大于10，所以可能要进位，对10进行取余操作，将结果保存在当前位
-- 判断当前位是否大于9，也就是是否会进位，若是则将temp赋值为true，因为在加法运算中，true会自动隐式转化为1，以便于下一次相加
+- 初始化 res，temp 来保存中间的计算结果，并将两个字符串转化为数组，以便进行每一位的加法运算
+- 将两个数组的对应的位进行相加，两个数相加的结果可能大于 10，所以可能要进位，对 10 进行取余操作，将结果保存在当前位
+- 判断当前位是否大于 9，也就是是否会进位，若是则将 temp 赋值为 true，因为在加法运算中，true 会自动隐式转化为 1，以便于下一次相加
 - 重复上述操作，直至计算结束
 
 ### 13. 实现 add(1)(2)(3)
 
 函数柯里化概念： 柯里化（Currying）是把接受多个参数的函数转变为接受一个单一参数的函数，并且返回接受余下的参数且返回结果的新函数的技术。
-
-
 
 1）粗暴版
 
@@ -1227,14 +1209,12 @@ console.log(add(3)(4)(5)); // 12
 console.log(add(3)(6)(9)(25)); // 43
 ```
 
-对于add(3)(4)(5)，其执行过程如下：
+对于 add(3)(4)(5)，其执行过程如下：
 
-1. 先执行add(3)，此时m=3，并且返回temp函数；
-2. 执行temp(4)，这个函数内执行add(m+n)，n是此次传进来的数值4，m值还是上一步中的3，所以add(m+n)=add(3+4)=add(7)，此时m=7，并且返回temp函数
-3. 执行temp(5)，这个函数内执行add(m+n)，n是此次传进来的数值5，m值还是上一步中的7，所以add(m+n)=add(7+5)=add(12)，此时m=12，并且返回temp函数
-4. 由于后面没有传入参数，等于返回的temp函数不被执行而是打印，了解JS的朋友都知道对象的toString是修改对象转换字符串的方法，因此代码中temp函数的toString函数return m值，而m值是最后一步执行函数时的值m=12，所以返回值是12。
-
-
+1. 先执行 add(3)，此时 m=3，并且返回 temp 函数；
+2. 执行 temp(4)，这个函数内执行 add(m+n)，n 是此次传进来的数值 4，m 值还是上一步中的 3，所以 add(m+n)=add(3+4)=add(7)，此时 m=7，并且返回 temp 函数
+3. 执行 temp(5)，这个函数内执行 add(m+n)，n 是此次传进来的数值 5，m 值还是上一步中的 7，所以 add(m+n)=add(7+5)=add(12)，此时 m=12，并且返回 temp 函数
+4. 由于后面没有传入参数，等于返回的 temp 函数不被执行而是打印，了解 JS 的朋友都知道对象的 toString 是修改对象转换字符串的方法，因此代码中 temp 函数的 toString 函数 return m 值，而 m 值是最后一步执行函数时的值 m=12，所以返回值是 12。
 
 - 参数长度不固定
 
@@ -1312,14 +1292,14 @@ arr.flat(Infinity).reduce((prev, cur) => { return prev + cur }, 0)
 arr = [{a:1, b:3}, {a:2, b:3, c:4}, {a:3}]，求和
 
 ```
-let arr = [{a:9, b:3, c:4}, {a:1, b:3}, {a:3}] 
+let arr = [{a:9, b:3, c:4}, {a:1, b:3}, {a:3}]
 
 arr.reduce((prev, cur) => {
     return prev + cur["a"];
 }, 0)
 ```
 
-### 16. 将js对象转化为树形结构
+### 16. 将 js 对象转化为树形结构
 
 ```
 // 转换前：
@@ -1336,7 +1316,7 @@ source = [{
             pid: 2,
             name: 'div'
           }]
-// 转换为: 
+// 转换为:
 tree = [{
           id: 1,
           pid: 0,
@@ -1368,7 +1348,7 @@ function jsonToTree(data) {
   data.forEach(item => {
     map[item.id] = item;
   });
-  // 
+  //
   data.forEach(item => {
     let parent = map[item.pid];
     if(parent) {
@@ -1381,7 +1361,7 @@ function jsonToTree(data) {
 }
 ```
 
-### 17. 使用ES5和ES6求函数参数的和
+### 17. 使用 ES5 和 ES6 求函数参数的和
 
 ES5：
 
@@ -1451,8 +1431,6 @@ function parseParam(url) {
 
 下面来看一道比较典型的问题，通过这个问题来对比几种异步编程方法：**红灯 3s 亮一次，绿灯 1s 亮一次，黄灯 2s 亮一次；如何让三个灯不断交替重复亮灯？**
 
-
-
 三个亮灯函数：
 
 ```
@@ -1495,8 +1473,6 @@ task(3000, 'red', () => {
 
 这里存在一个 bug：代码只是完成了一次流程，执行后红黄绿灯分别只亮一次。该如何让它交替重复进行呢？
 
-
-
 上面提到过递归，可以递归亮灯的一个周期：
 
 ```
@@ -1515,7 +1491,7 @@ step()
 #### （2）用 promise 实现
 
 ```
-const task = (timer, light) => 
+const task = (timer, light) =>
     new Promise((resolve, reject) => {
         setTimeout(() => {
             if (light === 'red') {
@@ -1574,42 +1550,42 @@ for (let i = 0; i < 5; i++) {
 
 ### 3. 小孩报数问题
 
-有30个小孩儿，编号从1-30，围成一圈依此报数，1、2、3 数到 3 的小孩儿退出这个圈， 然后下一个小孩 重新报数 1、2、3，问最后剩下的那个小孩儿的编号是多少?
+有 30 个小孩儿，编号从 1-30，围成一圈依此报数，1、2、3 数到 3 的小孩儿退出这个圈， 然后下一个小孩 重新报数 1、2、3，问最后剩下的那个小孩儿的编号是多少?
 
 ```
 function childNum(num, count){
-    let allplayer = [];    
+    let allplayer = [];
     for(let i = 0; i < num; i++){
         allplayer[i] = i + 1;
     }
-    
+
     let exitCount = 0;    // 离开人数
     let counter = 0;      // 记录报数
     let curIndex = 0;     // 当前下标
-    
+
     while(exitCount < num - 1){
-        if(allplayer[curIndex] !== 0) counter++;    
-        
+        if(allplayer[curIndex] !== 0) counter++;
+
         if(counter == count){
-            allplayer[curIndex] = 0;                 
+            allplayer[curIndex] = 0;
             counter = 0;
-            exitCount++;  
+            exitCount++;
         }
         curIndex++;
         if(curIndex == num){
-            curIndex = 0               
-        };           
-    }    
+            curIndex = 0
+        };
+    }
     for(i = 0; i < num; i++){
         if(allplayer[i] !== 0){
             return allplayer[i]
-        }      
+        }
     }
 }
 childNum(30, 3)
 ```
 
-### 4. 用Promise实现图片的异步加载
+### 4. 用 Promise 实现图片的异步加载
 
 ```
 let imageAsync=(url)=>{
@@ -1626,7 +1602,7 @@ let imageAsync=(url)=>{
                 }
             })
         }
-        
+
 imageAsync("url").then(()=>{
     console.log("加载成功");
 }).catch((error)=>{
@@ -1702,7 +1678,7 @@ function findMostWord(article) {
   // 遍历判断单词出现次数
   wordList.forEach(function(item) {
     if (visited.indexOf(item) < 0) {
-      // 加入 visited 
+      // 加入 visited
       visited.push(item);
       let word = new RegExp(" " + item + " ", "g"),
         num = article.match(word).length;
@@ -1716,7 +1692,7 @@ function findMostWord(article) {
 }
 ```
 
-### 7. 封装异步的fetch，使用async await方式来使用
+### 7. 封装异步的 fetch，使用 async await 方式来使用
 
 ```
 (async () => {
@@ -1766,7 +1742,7 @@ function findMostWord(article) {
 })();
 ```
 
-### 8. 实现prototype继承
+### 8. 实现 prototype 继承
 
 所谓的原型链继承就是让新实例的原型等于父类的实例：
 
@@ -1916,11 +1892,7 @@ var lengthOfLongestSubstring = function (s) {
 
 setInterval 的作用是每隔一段指定时间执行一个函数，但是这个执行不是真的到了时间立即执行，它真正的作用是每隔一段时间将事件加入事件队列中去，只有当当前的执行栈为空的时候，才能去从事件队列中取出事件执行。所以可能会出现这样的情况，就是当前执行栈执行的时间很长，导致事件队列里边积累多个定时器加入的事件，当执行栈结束的时候，这些事件会依次执行，因此就不能到间隔一段时间执行的效果。
 
-
-
 针对 setInterval 的这个缺点，我们可以使用 setTimeout 递归调用来模拟 setInterval，这样我们就确保了只有一个事件结束了，我们才会触发下一个定时器事件，这样解决了 setInterval 的问题。
-
-
 
 实现思路是使用递归函数，不断地去执行 setTimeout 从而达到 setInterval 的效果
 
@@ -1944,7 +1916,7 @@ function mySetInterval(fn, timeout) {
 }
 ```
 
-### 14. 实现 jsonp 
+### 14. 实现 jsonp
 
 ```
 // 动态的加载js文件
@@ -1966,8 +1938,6 @@ handleRes({a: 1, b: 2});
 ### 15. 判断对象是否存在循环引用
 
 循环引用对象本来没有什么问题，但是序列化的时候就会发生问题，比如调用`JSON.stringify()`对该类对象进行序列化，就会报错: `Converting circular structure to JSON.`
-
-
 
 下面方法可以用来判断一个对象中是否已存在循环引用：
 
@@ -2028,7 +1998,7 @@ var findNumberIn2DArray = function(matrix, target) {
 function printMatrix(arr){
   let m = arr.length, n = arr[0].length
     let res = []
-  
+
   // 左上角，从0 到 n - 1 列进行打印
   for (let k = 0; k < n; k++) {
     for (let i = 0, j = k; i < m && j >= 0; i++, j--) {

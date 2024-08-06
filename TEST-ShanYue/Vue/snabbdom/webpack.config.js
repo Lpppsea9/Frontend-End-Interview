@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
 	mode: "development",
-	entry: "./src/main.js",
+	entry: "./src/index.js",
 	output: {
 		filename: "main.js",
 		path: path.resolve(__dirname, "./dist"),
@@ -44,5 +44,13 @@ module.exports = {
 		open: true, // 是否自动打开浏览器
 		compress: true, // 是否自动 gzip 压缩
 		// 设置代理
+	},
+	stats: {
+		all: true, // 关闭所有统计信息
+		assets: true, // 显示资源信息
+		errors: true, // 显示错误信息
+		warnings: true, // 显示警告信息
+		timings: true, // 显示构建时间
+		// 你可以根据需要启用其他选项
 	},
 };
