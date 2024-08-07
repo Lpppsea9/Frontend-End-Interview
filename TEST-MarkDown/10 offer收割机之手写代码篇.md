@@ -1967,7 +1967,7 @@ const c = {b};
 const o = {d:{a:3},c}
 o.c.b.aa = a;
 
-console.log(isCycleObject(o)
+console.log(isCycleObject(o))
 ```
 
 查找有序二维数组的目标值：
