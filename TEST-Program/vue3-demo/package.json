@@ -1,0 +1,5 @@
+{
+	"dependencies": {
+		"@opentiny/fluent-editor": "^3.21.0"
+	}
+}
