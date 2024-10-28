@@ -1,12 +1,12 @@
+import createElement from "./createElement";
 import patchVnode from "./patchVnode";
 
 const sameVnode = (oldVnode, newVnode) => {
 	// console.log(oldVnode, newVnode);
 	return oldVnode.key == newVnode.key;
 };
-
-export default function updateChildren(oldNodeElm, oldCh, newCh) {
-	console.log(oldNodeElm, oldCh, newCh);
+export default function updateChildren(parentNodeElm, oldCh, newCh) {
+	console.log(parentNodeElm, oldCh, newCh);
 	let oldStartIdx = 0;
 	let oldEndIdx = oldCh.length - 1;
 	let newStartIdx = 0;
@@ -18,7 +18,11 @@ export default function updateChildren(oldNodeElm, oldCh, newCh) {
 	let newEndVnode = newCh[newEndIdx];
 
 	while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
-		if (sameVnode(oldStartVnode, newStartVnode)) {
+		if (oldStartVnode == undefined) {
+			oldStartVnode = oldCh[++oldStartIdx];
+		} else if (oldEndVnode == undefined) {
+			oldEndVnode = oldCh[--oldEndIdx];
+		} else if (sameVnode(oldStartVnode, newStartVnode)) {
 			// 旧前 新前
 			console.log("1");
 			patchVnode(oldStartVnode, newStartVnode);
@@ -37,7 +41,10 @@ export default function updateChildren(oldNodeElm, oldCh, newCh) {
 			console.log("3");
 			patchVnode(oldStartVnode, newEndVnode);
 			if (newEndVnode) newEndVnode.elm = oldStartVnode.elem;
-			oldNodeElm.insertBefore(oldStartVnode.elm, oldEndVnode.elm.nextSibling);
+			parentNodeElm.insertBefore(
+				oldStartVnode.elm,
+				oldEndVnode.elm.nextSibling
+			);
 			oldStartVnode = oldCh[++oldStartIdx];
 			newEndVnode = newCh[--newEndIdx];
 		} else if (sameVnode(oldEndVnode, newStartVnode)) {
@@ -45,11 +52,47 @@ export default function updateChildren(oldNodeElm, oldCh, newCh) {
 			console.log("4");
 			patchVnode(oldEndVnode, newStartVnode);
 			if (newStartVnode) newStartVnode.elm = oldEndVnode.elem;
-			oldNodeElm.insertBefore(oldEndVnode.elm, oldStartVnode.elm);
+			parentNodeElm.insertBefore(oldEndVnode.elm, oldStartVnode.elm);
 			oldEndVnode = oldCh[--oldEndIdx];
 			newStartVnode = newCh[++newStartIdx];
 		} else {
 			// 第五种情况
+			console.log("5");
+			const keyMap = {};
+			for (let i = oldStartIdx; i <= oldEndIdx; i++) {
+				const key = oldCh[i]?.key;
+				if (key) keyMap[key] = i;
+			}
+			// console.log("keyMap", keyMap);
+			let idxInOld = keyMap[newStartVnode.key];
+
+			if (idxInOld) {
+				// 如果有，说明数据在新旧虚拟节点中都存在
+				const elmMove = oldCh[idxInOld];
+				patchVnode(elmMove, newStartVnode);
+				oldCh[idxInOld] = undefined;
+				parentNodeElm.insertBefore(elmMove.elm, oldStartVnode.elm);
+			} else {
+				// 新节点不存在旧节点要构造新节点
+				patchVnode();
+				parentNodeElm.insertBefore(
+					createElement(newStartVnode),
+					oldCh[idxInOld].elm
+				);
+			}
+			newStartVnode = newCh[++newStartIdx];
+		}
+	}
+	// 结束while
+	if (oldStartIdx > oldEndIdx) {
+		const before = newCh[newEndIdx + 1] ? newCh[newEndIdx + 1].elm : null;
+		for (let i = newStartIdx; i <= newEndIdx; i++) {
+			parentNodeElm.insertBefore(createElement(newCh[i]), before);
+		}
+	} else {
+		// 进入删除操作
+		for (let i = oldStartIdx; i <= oldEndIdx; i++) {
+			parentNodeElm.removeChild(oldCh[i].elm);
 		}
 	}
 }

@@ -5,9 +5,29 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<title>Document</title>
+		<style>
+			.div1 {
+				width: 100px;
+				height: 100px;
+				border: 1px solid greenyellow;
+				background: powderblue;
+				box-sizing: border-box;
+			}
+		</style>
 	</head>
 	<body>
 		<input id="inputDom" />
-		<script src="./everyDay.js"></script>
+		<div
+			id="divDom"
+			style="width: 300px; height: 300px; border: 1px solid skyblue"
+		></div>
+
+		<div id="div1" class="div1"></div>
 	</body>
+	<script src="./index.js"></script>
+	<script>
+		// const div1 = document.getElementById("div1");
+		// console.log(document.getElementById("div1").offsetWidth);
+		// console.log(document.getElementsByClassName("div1")[0].offsetWidth);
+	</script>
 </html>

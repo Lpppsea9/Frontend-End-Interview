@@ -50,10 +50,25 @@ let vnodeUl1 = h("ul", {}, [
 ]);
 
 let vnodeUl2 = h("ul", {}, [
-	h("li", { key: "d" }, "d"),
-	h("li", { key: "c" }, "c"),
-	h("li", { key: "b" }, "b"),
+	// h("li", { key: "d" }, "d"),
+	// h("li", { key: "c" }, "c"),
+	// h("li", { key: "b" }, "b"),
+	// h("li", { key: "a" }, "a"),
+	// 第五种情况
+	// h("li", { key: "c" }, "c"),
+	// h("li", { key: "d" }, "d"),
+	// h("li", { key: "a" }, "a"),
+	// h("li", { key: "b" }, "b"),
+	// 删除节点
+	// h("li", { key: "a" }, "a"),
+	// h("li", { key: "b" }, "b"),
+	// h("li", { key: "c" }, "c"),
+	// 增加节点
 	h("li", { key: "a" }, "a"),
+	h("li", { key: "b" }, "b"),
+	h("li", { key: "c" }, "c"),
+	h("li", { key: "d" }, "d"),
+	h("li", { key: "e" }, "e"),
 ]);
 
 patch(node1, vnodeUl1);

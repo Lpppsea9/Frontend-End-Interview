@@ -33,14 +33,10 @@ module.exports = {
 		}),
 	],
 	devServer: {
-		stats: {
-			stats: "errors-only",
-		},
 		static: {
 			directory: path.resolve(__dirname, "./dist"),
 			// publicPath: "/hunas", //http://localhost:8080/huna/main.js
 		},
-
 		host: "localhost", // 启动服务器域名
 		port: 3000, // 端口号
 		allowedHosts: "all",
