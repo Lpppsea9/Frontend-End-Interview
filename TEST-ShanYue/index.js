@@ -1,35 +1,72 @@
-const obj1 = {
-	name: "kkk",
-	like: ["run", "swim"],
-	eat: {
-		fruits: ["apple", "banana"],
-	},
+// const obj = {
+// 	name: "lppp",
+// 	sayName: function (arg1, arg2) {
+// 		console.log("this.name", this.name, arg1, arg2);
+// 	},
+// };
+// const obj2 = {
+// 	name: "ppp",
+// };
+
+// Function.prototype.myCall = function (context) {
+// 	if (typeof this !== "function") {
+// 		console.error("type error");
+// 	}
+// 	let args = [...arguments].slice(1),
+// 		result = null;
+// 	context = context || window;
+// 	context.fn = this;
+// 	result = context.fn(...args);
+// 	delete context.fn;
+// 	return result;
+// };
+
+// Function.prototype.myApply = function (context) {
+// 	if (typeof this !== "function") {
+// 		console.error("type error");
+// 	}
+// 	let args = [...arguments][1],
+// 		result = null;
+// 	context = context || window;
+// 	context.fn = this;
+// 	result = context.fn(...args);
+// 	return result;
+// };
+
+const z = 0;
+const obj = {
+	z: 1,
+};
+function fn(x, y) {
+	this.name = "sea9";
+
+	console.log(this.z);
+	console.log(x);
+	console.log(y);
+}
+fn.prototype.age = 26;
+
+/*
+  bind 返回一个绑定了this的新函数, 支持柯里化
+  bind 是硬绑定 
+  考虑bind new 调用
+*/
+Function.prototype.myBind = function (context) {
+	const args = Array.prototype.slice.call(arguments, 1);
+	const fn = this;
+	return function Fn() {
+		const restArgs = Array.prototype.slice.call(arguments);
+		const argsAll = args.concat(restArgs);
+		return fn.apply(this instanceof Fn ? this : context, argsAll);
+	};
 };
 
-const obj2 = {
-	name: "kkk",
-	like: ["run", "swim"],
-	eat: {
-		fruits: ["apple", "banana"],
-	},
-};
+const bound = fn.myBind(obj, 2);
+const person = new bound(3);
+console.log(person.name);
+console.log(person.age);
 
-console.log(obj1 === obj2);
-const isEqual = (obj1, obj2) => {
-	if (obj1 === obj2) {
-		return true;
-	} else if (
-		typeof obj1 === "object" &&
-		obj1 !== null &&
-		typeof obj2 === "object" &&
-		obj2 !== null
-	) {
-		const keys1 = Object.keys(obj1);
-		const keys2 = Object.keys(obj2);
-		for (const key in object) {
-			if (Object.prototype.hasOwnProperty.call(object, key)) {
-				const element = object[key];
-			}
-		}
-	}
-};
+// const bound = fn.bind(obj, 2);
+// const person = new bound(3);
+// console.log(person.name);
+// console.log(person.age);
